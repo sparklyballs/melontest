@@ -1,2 +1,2 @@
-test version of hddcoin docker image
+test version of melon docker image
 

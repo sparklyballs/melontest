@@ -12,7 +12,7 @@ cd /melon-blockchain || exit 1
 . ./activate
 
 melon init
-#melon init --fix-ssl-permissions
+# melon init --fix-ssl-permissions
 
 if [[ ${testnet} == 'true' ]]; then
    echo "configure testnet"
@@ -45,6 +45,14 @@ done
 
 if [[ -n "${log_level}" ]]; then
   melon configure --log-level "${log_level}"
+fi
+
+if [[ -n "${peer_count}" ]]; then
+  melon configure --set-peer-count "${peer_count}"
+fi
+
+if [[ -n "${outbound_peer_count}" ]]; then
+  melon configure --set_outbound-peer-count "${outbound_peer_count}"
 fi
 
 sed -i 's/localhost/127.0.0.1/g' "$CONFIG_ROOT/config/config.yaml"

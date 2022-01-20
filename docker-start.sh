@@ -1,20 +1,15 @@
 #!/usr/bin/env bash
 
 # shellcheck disable=SC2154
-if [[ ${farmer} == 'true' ]]; then
-  melon start farmer-only
-elif [[ ${harvester} == 'true' ]]; then
-  if [[ -z ${farmer_address} || -z ${farmer_port} || -z ${ca} ]]; then
-    echo "A farmer peer address, port, and ca path are required."
-    exit
-  else
-    melon configure --set-farmer-peer "${farmer_address}:${farmer_port}"
-    melon start harvester
-  fi
-else
-  melon start farmer
+melon start "${service}"
+
+trap "echo Shutting down ...; melon stop all -d; exit 0" SIGINT SIGTERM
+
+# shellcheck disable=SC2154
+if [[ ${log_to_file} == 'true' ]]; then
+  # Ensures the log file actually exists, so we can tail successfully
+  touch "$MELON_ROOT/log/debug.log"
+  tail -F "$MELON_ROOT/log/debug.log" &
 fi
 
-# Ensures the log file actually exists, so we can tail successfully
-touch "$CONFIG_ROOT/log/debug.log"
-tail -f "$CONFIG_ROOT/log/debug.log"
+while true; do sleep 1; done
